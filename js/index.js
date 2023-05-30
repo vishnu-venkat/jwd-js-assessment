@@ -1,38 +1,32 @@
-/* ***************************
-  JWD JavaScript Assessment
-
-  This code is unfinished. You will need to study it to figure out what it does. Then you will need to use this and
-  your own code, to finish the app. 
-  
-  The tasks you need to do are below.
-
-    TASKS TODO:
-      1. Calculate the score as the total of the number of correct answers
-
-      2. Add an Event listener for the submit button, which will display the score and highlight 
-         the correct answers when the button is clicked. Use the code from lines 67 to 86 to help you.
-
-      3. Add 2 more questions to the app (each question must have 4 options).
-
-      4. Reload the page when the reset button is clicked (hint: search window.location)
-
-      5. Add a countdown timer - when the time is up, end the quiz, display the score and highlight the correct answers
-*************************** */
 
 window.addEventListener('DOMContentLoaded', () => {
   const start = document.querySelector('#start');
   start.addEventListener('click', function (e) {
     document.querySelector('#quizBlock').style.display = 'block';
     start.style.display = 'none';
+
+    var minute = 0;
+    var sec = 59;
+    const timer = setInterval(function() {
+      document.getElementById("time").innerHTML = 0 + ":" + sec;
+      sec--;
+
+      if (sec == 00) {
+        clearInterval(timer);
+        document.getElementById("time").innerHTML = "1.00";
+        calculateScore();
+      }
+    }, 1000);
+
   });
-  // quizArray QUESTIONS & ANSWERS
-  // q = QUESTION, o = OPTIONS, a = CORRECT ANSWER
-  // Basic ideas from https://code-boxx.com/simple-javascript-quiz/
+
+
+
   const quizArray = [
     {
       q: 'Which is the third planet from the sun?',
       o: ['Saturn', 'Earth', 'Pluto', 'Mars'],
-      a: 1, // array index 1 - so Earth is the correct answer here
+      a: 1,
     },
     {
       q: 'Which is the largest ocean on Earth?',
@@ -40,14 +34,27 @@ window.addEventListener('DOMContentLoaded', () => {
       a: 3,
     },
     {
-      q: 'What is the capital of Australia',
+      q: 'What is the capital of Australia?',
       o: ['Sydney', 'Canberra', 'Melbourne', 'Perth'],
       a: 1,
     },
+    {
+      q: 'What is the only continent with land in all four hemispheres?',
+      o: ['Africa', 'Australia', 'Asia', 'Europe'],
+      a: 0,
+    },
+    {
+      q: 'What is the capital of Ireland?',
+      o: ['Limerick', 'Belfast', 'Derry', 'Dublin'],
+      a: 3,
+    }
   ];
+
+
 
   // function to Display the quiz questions and answers from the object
   const displayQuiz = () => {
+
     const quizWrap = document.querySelector('#quizWrap');
     let quizDisplay = '';
     quizArray.map((quizItem, index) => {
@@ -76,15 +83,26 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (quizItem.a == i) {
           //change background color of li element here
+          liElement.style.backgroundColor= 'green';
         }
 
-        if (radioElement.checked) {
-          // code for task 1 goes here
+        if (radioElement.checked && quizItem.o[i] == quizItem.o[quizItem.a]) {
+            score++;
         }
       }
     });
+    console.log(score);
+    const scoreElement = document.querySelector('#score');
+    scoreElement.innerHTML = "Your score is "+score;
   };
 
+  const submit = document.querySelector('#btnSubmit');
+  submit.addEventListener('click', calculateScore);
   // call the displayQuiz function
   displayQuiz();
+  const reset = document.querySelector('#btnReset');
+  reset.addEventListener('click', function (){
+    window.location.reload();
+  });
+
 });
